@@ -1,12 +1,12 @@
 import streamlit as st
 import requests 
-import jwt  # pip install PyJWT
+import jwt  
 
-#this is not sure lol
 APIGATEWAY = "http://apigateway:5000"
 
 # Fra Claus
-# gemmer variabler mellem re-runs så brugeren kan forblive logget ind selvom appen reloader
+# gemmer variabler mellem re-runs så brugeren kan forblive logget ind selvom appen reloader ?
+
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'username' not in st.session_state:
@@ -55,7 +55,7 @@ with st.sidebar:
 
  
 # Main content
-st.title("her vises noget der ændres efter hvilken rolle du har")
+st.title("Bibabonnement.dk")
 if 'role' not in st.session_state:
     st.session_state.role = "reader"  # OBS default role indtil der er logget ind??
 
