@@ -11,7 +11,7 @@ from database import init_db, seed_users, find_user_by_username
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv() #henter KEY fra .env fil (den er ikke med på github btw)
 #load database og default users
 init_db()
 seed_users()

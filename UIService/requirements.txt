@@ -23,6 +23,7 @@ pyarrow==21.0.0
 pydeck==0.9.1
 python-dateutil==2.9.0.post0
 pytz==2025.2
+PyJWT
 referencing==0.37.0
 requests==2.32.5
 rpds-py==0.30.0

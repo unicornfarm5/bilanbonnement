@@ -3,7 +3,7 @@ import requests
 import jwt  # pip install PyJWT
 
 #this is not sure lol
-APIGATEWAY = "http://apigateway:8000"
+APIGATEWAY = "http://apigateway:5000"
 
 # Fra Claus
 # gemmer variabler mellem re-runs så brugeren kan forblive logget ind selvom appen reloader
@@ -26,7 +26,7 @@ with st.sidebar:
             if st.button("Login"):
                 try:
                     response = requests.post(
-                        f"{APIGATEWAY}/login",
+                        f"{APIGATEWAY}/api/account/login",
                         json={"username": login_username, "password": login_password}
                     )
 
@@ -50,15 +50,19 @@ with st.sidebar:
                         st.error(response.json().get('message', 'Login failed'))
                 except Exception as e:
                     st.error(f"Error connecting to account service: {str(e)}")
+                    print("status kode: " + str(response.status_code))
+                    print(" response text " + response.text)
 
  
 # Main content
 st.title("her vises noget der ændres efter hvilken rolle du har")
+if 'role' not in st.session_state:
+    st.session_state.role = "reader"  # OBS default role indtil der er logget ind??
 
 if st.session_state.role == "admin":
-    st.button("Delete record")
+    st.button("you are admin, Delete record")
 elif st.session_state.role == "editor":
-    st.button("Edit record")
+    st.button("you are editor, Edit record")
 else:  # reader
     st.write("Read-only view")
 
