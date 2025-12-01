@@ -1,0 +1,36 @@
+services:
+  apigateway:
+    build:
+      context: ./ApiGateway
+      dockerfile: Dockerfile
+    ports:
+      - "8000:5000"
+    networks:
+      - app-network
+    restart: unless-stopped
+    depends_on:
+      - accountservice
+  accountservice:
+    build:
+      context: ./AccountService
+      dockerfile: Dockerfile
+    ports:
+      - "5010:5000"
+    networks:
+      - app-network
+    restart: unless-stopped
+  ui:
+    build:
+      context: ./UIService
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    networks:
+      - app-network
+    restart: unless-stopped
+    depends_on:
+      - accountservice
+
+networks:
+  app-network:
+    driver: bridge

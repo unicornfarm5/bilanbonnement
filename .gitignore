@@ -1,0 +1,14 @@
+# SQLite database file
+users.db
+
+# Environment variables
+.env
+.venv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+#idk der skal sikkers mere herind later lol
