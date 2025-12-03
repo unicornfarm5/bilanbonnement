@@ -58,12 +58,20 @@ with st.sidebar:
 st.title("Bibabonnement.dk")
 if 'role' not in st.session_state:
     st.session_state.role = "reader"  # OBS default role indtil der er logget ind??
+    st.write("Du har ikke fået en rolle endnu !!!!")
 
-if st.session_state.role == "admin":
-    st.button("you are admin, Delete record")
-elif st.session_state.role == "editor":
-    st.button("you are editor, Edit record")
+if st.session_state.role == "rental":
+    st.button("you are a rental person")
+elif st.session_state.role == "damage":
+    st.button("you are a damage person, make a damage report")
+elif st.session_state.role == "business":
+    st.button("you are a business person, View reports when we make them lol")
 else:  # reader
-    st.write("Read-only view")
+    st.write("Du er ikke logget ind eller har ikke fået en rolle endnu")
+
+
+#fra chat, til tjek
+import requests
+st.write(requests.get(f"{APIGATEWAY}/api/all_rentals").json())
 
 

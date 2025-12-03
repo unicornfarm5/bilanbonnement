@@ -3,6 +3,8 @@ services:
     build:
       context: ./ApiGateway
       dockerfile: Dockerfile
+    environment:
+        - KEY=${JWT_SECRET}
     ports:
       - "8000:5000"
     networks:
@@ -10,19 +12,40 @@ services:
     restart: unless-stopped
     depends_on:
       - accountservice
+      
+
   accountservice:
     build:
       context: ./AccountService
       dockerfile: Dockerfile
+    environment:
+        - KEY=${JWT_SECRET}
     ports:
       - "5010:5000"
     networks:
       - app-network
     restart: unless-stopped
+  
+  rentalservice:
+    build:
+      context: ./RentalService
+      dockerfile: Dockerfile
+    environment:
+        - KEY=${JWT_SECRET}
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    restart: unless-stopped
+    depends_on:
+      - accountservice
+
   ui:
     build:
       context: ./UIService
       dockerfile: Dockerfile
+    environment:
+        - KEY=${JWT_SECRET}
     ports:
       - "8501:8501"
     networks:
@@ -34,3 +57,4 @@ services:
 networks:
   app-network:
     driver: bridge
+

@@ -5,6 +5,7 @@
     passwordhåndtering og brugerroller.
 """
 
+
 from flask import Flask, jsonify, request, make_response
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 from database import init_db, seed_users, find_user_by_username
