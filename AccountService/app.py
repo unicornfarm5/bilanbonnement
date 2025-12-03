@@ -21,24 +21,6 @@ app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = os.getenv('KEY')
 jwt = JWTManager(app)
 
-# Hent brugerprofil
-@app.route('/profile', methods=['GET'])
-@jwt_required()
-def view_profile():
-    current_user = get_jwt_identity()
-    claims = get_jwt()
-    role = claims.get("role", "reader")
-
-    user = find_user_by_username(current_user)              
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
-
-    return jsonify({
-        'username': user['username'],
-        'id': user['id'],
-        'role': role,
-    }), 200
-
 
 # Log bruger ind og returner JWT token
 @app.route('/login', methods=['POST'])
@@ -64,6 +46,26 @@ def login():
     response = make_response(jsonify({'message': 'Login successful', 'token': token}), 200)
     response.headers['Authorization'] = f'Bearer {token}'
     return response
+
+
+
+# Hent brugerprofil - ikke i brug endnu og ikke tilrettet til os
+@app.route('/profile', methods=['GET'])
+@jwt_required()
+def view_profile():
+    current_user = get_jwt_identity()
+    claims = get_jwt()
+    role = claims.get("role", "reader")
+
+    user = find_user_by_username(current_user)              
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
+
+    return jsonify({
+        'username': user['username'],
+        'id': user['id'],
+        'role': role,
+    }), 200
 
 
 app.run(host='0.0.0.0', port=5000)
