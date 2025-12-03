@@ -4,7 +4,8 @@ services:
       context: ./ApiGateway
       dockerfile: Dockerfile
     environment:
-        - KEY=${JWT_SECRET}
+        - KEY=${KEY}
+        - RENTAL_SERVICE_URL=http://rentalservice:5000
     ports:
       - "8000:5000"
     networks:
@@ -12,6 +13,8 @@ services:
     restart: unless-stopped
     depends_on:
       - accountservice
+      - rentalservice
+
       
 
   accountservice:
@@ -19,7 +22,7 @@ services:
       context: ./AccountService
       dockerfile: Dockerfile
     environment:
-        - KEY=${JWT_SECRET}
+        - KEY=${KEY}
     ports:
       - "5010:5000"
     networks:
@@ -31,7 +34,7 @@ services:
       context: ./RentalService
       dockerfile: Dockerfile
     environment:
-        - KEY=${JWT_SECRET}
+        - KEY=${KEY}
     ports:
       - "5000:5000"
     networks:
@@ -45,7 +48,7 @@ services:
       context: ./UIService
       dockerfile: Dockerfile
     environment:
-        - KEY=${JWT_SECRET}
+        - KEY=${KEY}
     ports:
       - "8501:8501"
     networks:
@@ -53,6 +56,7 @@ services:
     restart: unless-stopped
     depends_on:
       - accountservice
+      - rentalservice
 
 networks:
   app-network:

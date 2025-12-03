@@ -54,7 +54,7 @@ with st.sidebar:
                     print(" response text " + response.text)
 
  
-# Main content
+# Bare for at tjekke om login var succesfuldt
 st.title("Bibabonnement.dk")
 if 'role' not in st.session_state:
     st.session_state.role = "reader"  # OBS default role indtil der er logget ind??
@@ -71,7 +71,17 @@ else:  # reader
 
 
 #fra chat, til tjek
-import requests
-st.write(requests.get(f"{APIGATEWAY}/api/all_rentals").json())
+TOKEN = st.session_state.get("token")  
+USER_ROLE = st.session_state.get("role") 
+headers = {"Authorization": f"Bearer {TOKEN}"} if TOKEN else {}
 
-
+# Tjek om brugeren har 'damage'-rollen
+if USER_ROLE == "damage":
+    if st.button("Vis hele rental-databasen"):
+        response = requests.get(f"{APIGATEWAY}/api/rental/all_rentals", headers=headers)
+        if response.status_code == 200:
+            st.write(response.json())
+        else:
+            st.error(f"Fejl: {response.status_code} - {response.text}")
+else:
+    st.info("Du har ikke tilladelse til at se rental databasen.")

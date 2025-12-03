@@ -41,9 +41,9 @@ def view_profile():
 RENTAL_SERVICE_URL = "http://rentalservice:5000"
 
 #ENDPOINT -- get all rentals
-@app.route('/api/all_rentals', methods=['GET'])
+@app.route('/api/rental/all_rentals', methods=['GET'])
 def get_rentals():
-    response = requests.get(f"{RENTAL_SERVICE_URL}/rentals")
+    response = requests.get(f"{RENTAL_SERVICE_URL}/rental")
     return jsonify(response.json()), response.status_code
 
 

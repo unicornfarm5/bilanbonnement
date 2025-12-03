@@ -9,9 +9,9 @@ from rentalDatabase import init_db, get_all_rentals_db, seed_rentals
 #Load envirement varables, KEY til jwt-token
 load_dotenv()
 SECRET_KEY = os.getenv("KEY")
-JWT_ALGORITHM = "HS256"
+#JWT_ALGORITHM = "HS256"
 
-DATABASE = "rentals.db"
+DATABASE = "rental.db"
 app = FastAPI() #initialize FASTAPI app
 #load database og fyld den med defaul data
 init_db()
