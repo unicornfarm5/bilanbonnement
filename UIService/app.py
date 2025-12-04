@@ -75,6 +75,9 @@ TOKEN = st.session_state.get("token")
 USER_ROLE = st.session_state.get("role") 
 headers = {"Authorization": f"Bearer {TOKEN}"} if TOKEN else {}
 
+if 'role' in st.session_state:
+    st.write(f"Din rolle er: {st.session_state.role}")
+
 # Tjek om brugeren har 'damage'-rollen
 if USER_ROLE == "damage":
     if st.button("Vis hele rental-databasen"):
