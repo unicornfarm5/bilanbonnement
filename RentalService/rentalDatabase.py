@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from flask import jsonify
 
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'rental.db')
 
@@ -90,4 +91,5 @@ def get_all_rentals_db():
     rentals = cursor.fetchall()
     conn.close()
 
-    return [dict(row) for row in rentals]
+    rentals_list = [dict(row) for row in rentals]
+    return rentals_list
