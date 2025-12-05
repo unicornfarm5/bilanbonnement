@@ -31,6 +31,7 @@ SØRG FOR AT GÅ IND I HVER MAPPE (cd navnPåService) OG SKRIV
 
 for at oprette og aktivere en venv
 INSTALLERER DU NOGLE NYE DEPENDECIES, SÅ husk at KØRE INDE I MAPPEN
+```
         pip freeze > requirements.txt
-
+```
 SÅ VORES DOCKER COMPUTER OGSÅ VED AT DINE TILFØJEDE DEPENDECIES SKAL MED
