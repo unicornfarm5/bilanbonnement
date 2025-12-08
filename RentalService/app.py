@@ -3,7 +3,8 @@ from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.security import HTTPBearer
 from dotenv import load_dotenv
 from flask import jsonify, request, make_response
-from rentalDatabase import init_db, get_all_rentals_db, seed_rentals
+from pydantic import BaseModel
+from rentalDatabase import init_db, get_all_rentals_db, seed_rentals, add_rentals_db
 import os
 import jwt
 
@@ -43,6 +44,20 @@ def get_role_from_token(token: str):
         return None, "Invalid_token"
 
 
+
+# --- Basemodel for rentals, der gør det lettere at holde styr på alle entiteter i databasen
+# Ide fra chatGPT
+
+class RentalInput(BaseModel):
+    customer_id: str
+    license_plate: str
+    rental_start: str
+    rental_end: str
+    rental_type: str
+    price_per_month: float
+
+
+
 # --- Endpoints --- #
 
 #Kode lavet med hjælp fra ChatGPT
@@ -56,18 +71,48 @@ def get_all_rentals(authorization: str = Header(None)):
         auth_token = authorization[7:]
     else:
         auth_token = authorization
-
     role, err = get_role_from_token(auth_token)
     if err:
         return {"message": err}, 401
-
     if role not in ["rental", "business"]: #VIGTIGT: kun rental-medarbejdere og business har adgang til den fulde database
         return {"message": f"Din rolle: {role} har ikke adgang til denne information"}, 403
 
     rentals = get_all_rentals_db()
     return rentals
 
+
 #Endpoint til tilføjelse af ny lejeaftale
+@app.post("/all_rentals")
+def post_to_all_rentals(
+    rental: RentalInput,  # <-- Her modtages alle felter udfra klasen
+    authorization: str = Header(None)
+):
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="Missing Authorization header")
+
+    # Fjern 'Bearer ' prefix
+    if authorization.startswith("Bearer "):
+        auth_token = authorization[7:]
+    else:
+        auth_token = authorization
+    role, err = get_role_from_token(auth_token)
+    if err:
+        raise HTTPException(status_code=401, detail=err)
+
+    if role != "rental":
+        raise HTTPException(status_code=403, detail=f"Din rolle: {role} har ikke adgang")
+
+    # Kald databasefunktion og bruger basemodel
+    rentals = add_rentals_db(
+        rental.customer_id,
+        rental.license_plate,
+        rental.rental_start,
+        rental.rental_end,
+        rental.rental_type,
+        rental.price_per_month,
+    )
+
+    return rentals
 
 
 #Endpoint til opdatering af lejeaftale

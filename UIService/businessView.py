@@ -22,6 +22,7 @@ def show_business_page(session_state_from_ui):
     st.plotly_chart(graph1)
 
     # graf 2
+    # https://plotly.com/python/pie-charts/
     graph2 = px.pie(get_all_rentals(session_state_from_ui), 
                     values='rental_type', names='rental_type',
                     color_discrete_sequence=px.colors.sequential.RdBu)

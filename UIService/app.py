@@ -62,7 +62,7 @@ with st.sidebar:
 
 # Tjek af rolle, laver view efter det og sender TOKEN med (via st.session_state)
 if 'role' in st.session_state:
-    st.write(f"Velkommen {login_username} , du ser funktionalitet tilhørende: {st.session_state.role}")
+    st.write(f"Velkommen {st.session_state.username} , du ser funktionalitet tilhørende: {st.session_state.role}")
 
     SESSION_STATE = st.session_state
 
