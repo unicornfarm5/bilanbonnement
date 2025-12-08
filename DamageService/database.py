@@ -11,6 +11,7 @@ def get_db_connection():
 def init_db():
     """Initialize the database with the users table"""
     conn = get_db_connection()
+    conn.execute("PRAGMA foreign_keys = ON") # Aktiverer FK-constraints
     cursor = conn.cursor()
 
     cursor.execute('''
@@ -39,8 +40,8 @@ def init_db():
                    damage_price INT,
                    licensplate TEXT, --mangler foreign key, men hvad menes der?
                    order_id INT,
-                   FOREIGN KEY (damage_level_id) REFERENCES damage_levels(id) --må kun indeholde ID'er der eksisterer i damage_levels tabel
-                   created_at (DATETIME DEFAULT current_timestamp)
+                   FOREIGN KEY (damage_level_id) REFERENCES damage_levels(id), --må kun indeholde ID'er der eksisterer i damage_levels tabel
+                   created_at DATETIME DEFAULT current_timestamp
                    )
                 ''')
     conn.commit()
