@@ -19,6 +19,7 @@ seed_users()
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = os.getenv('KEY')
+app.config["JWT_ALGORITHM"] = "HS256" 
 jwt = JWTManager(app)
 
 
@@ -43,7 +44,11 @@ def login():
         additional_claims={"role": user['role']}
     )
 
-    response = make_response(jsonify({'message': 'Login successful', 'token': token}), 200)
+    response = make_response(jsonify({
+        'message': 'Login successful', 
+        'token': token
+        }), 200)
+    
     response.headers['Authorization'] = f'Bearer {token}'
     return response
 
