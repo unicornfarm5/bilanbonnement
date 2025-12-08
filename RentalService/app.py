@@ -61,8 +61,17 @@ def get_all_rentals(authorization: str = Header(None)):
     if err:
         return {"message": err}, 401
 
-    if role != "rental": #VIGTIGT: kun rental-medarbejdere har adgang pt
-        return {"message": "Unauthorized"}, 403
+    if role not in ["rental", "business"]: #VIGTIGT: kun rental-medarbejdere og business har adgang til den fulde database
+        return {"message": f"Din rolle: {role} har ikke adgang til denne information"}, 403
 
     rentals = get_all_rentals_db()
     return rentals
+
+#Endpoint til tilføjelse af ny lejeaftale
+
+
+#Endpoint til opdatering af lejeaftale
+
+
+
+#Endpoint til sletning af lejeaftale - lav priotet

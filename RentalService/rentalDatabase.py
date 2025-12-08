@@ -82,7 +82,7 @@ def seed_rentals():
 
 
 
-######## -- Endpoints -- #########
+######## -- Funktioner i databasen -- #########
 def get_all_rentals_db():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -93,3 +93,6 @@ def get_all_rentals_db():
 
     rentals_list = [dict(row) for row in rentals]
     return rentals_list
+
+
+#Opdater en lejeaftale

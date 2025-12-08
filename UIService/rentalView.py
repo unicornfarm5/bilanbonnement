@@ -7,7 +7,7 @@ def show_rental_page(session_state_from_ui):
     headers = {"Authorization": f"Bearer {TOKEN}"} if TOKEN else {}
     if st.button("Vis hele rental-databasen"):
                 if not session_state_from_ui.role: 
-                    st.error("Du er ikke logget ind ordenligt tror vi")
+                    st.error("Du er ikke logget ind")
                 else:
                     try:
                         response = requests.get(f"{RENTALSERVICE}/all_rentals", headers=headers)
@@ -15,7 +15,7 @@ def show_rental_page(session_state_from_ui):
                         if response.status_code == 200:
                             st.write(response.json())
                         elif response.status_code in (401, 403):
-                            st.error("Du har ikke tilladelse til at se denne data... ")
+                            st.error("Du har ikke tilladelse til at se denne data...")
                         else:
                             st.error(f"Fejl: {response.status_code} - {response.text}")
 
