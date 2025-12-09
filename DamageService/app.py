@@ -10,7 +10,11 @@ app = Flask(__name__)
 CORS(app)
 load_dotenv()
 
+#POST route
 
+
+
+#GET route
 
 
 
