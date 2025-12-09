@@ -1,7 +1,7 @@
 👩🏽‍💻✨Guide til dig der åbner for første gang✨👩🏽‍💻
  - Du skal oprette en fil der hedder .env i RODEN af projektet. I den skal du skrive KEY= og så et eller andet sammenhængende
  - Så skal du åbne terminalen og skrive:        docker-compose up --build
- - Gå ind på localhost/8501 for at se vores frontend
+ - Gå ind på localhost:8501 for at se vores frontend
  - Nu kan du logge ind som en af medarbejderene. Se mere herom i README.md i AccountService
 
 ## How to run the app with docker
