@@ -3,8 +3,9 @@ from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.security import HTTPBearer
 from dotenv import load_dotenv
 from flask import jsonify, request, make_response
+from flask_jwt_extended import jwt_required
 from pydantic import BaseModel
-from rentalDatabase import init_db, get_all_rentals_db, seed_rentals, add_rentals_db
+from rentalDatabase import init_db, get_all_rentals_db, seed_rentals, add_rentals_db, update_rentals_db
 import os
 import jwt
 
@@ -56,13 +57,26 @@ class RentalInput(BaseModel):
     rental_type: str
     price_per_month: float
 
+# --- Basemodel til opdatering - note that ikke alle entiteter i en rental skal kunne opdateres
+# Denne er klar til at disse felter ville kunne opdateres, hvis vi vil tilføje den funktion,
+# Bygget fleksibel så vi kan bruge basemodel'en ligemeget hvilket/hvilke felter vi vil opdatere
+
+class UpdateRentalInput(BaseModel):
+    license_plate: str | None = None
+    rental_end: str | None = None
+    rental_type: str | None = None
+    price_per_month: float | None = None
+
+
 
 
 # --- Endpoints --- #
 
 #Kode lavet med hjælp fra ChatGPT
 @app.get("/all_rentals")
-def get_all_rentals(authorization: str = Header(None)):
+def get_all_rentals(
+    authorization: str = Header(None)
+):
     if authorization is None:
         return {"message": "Missing Authorization header"}, 401
 
@@ -115,8 +129,37 @@ def post_to_all_rentals(
     return rentals
 
 
+
 #Endpoint til opdatering af lejeaftale
+@app.put("/all_rentals/update/{order_id}")
+def update_rental(
+    order_id: int, 
+    rental_update: UpdateRentalInput, #Fra class'en
+    authorization: str = Header(None)
+):
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="Missing Authorization header")
+
+    # Fjern 'Bearer ' prefix
+    if authorization.startswith("Bearer "):
+        auth_token = authorization[7:]
+    else:
+        auth_token = authorization
+    role, err = get_role_from_token(auth_token)
+    if err:
+        raise HTTPException(status_code=401, detail=err)
+
+    if role != "rental":
+        raise HTTPException(status_code=403, detail=f"Din rolle: {role} har ikke adgang")
+
+    # Kald databasefunktion og bruger basemodel
+    updated = update_rentals_db(order_id, {"rental_end": rental_update.rental_end})
 
 
+    if updated is None:
+        raise HTTPException(status_code=404, detail="Order ID findes ikke")
 
-#Endpoint til sletning af lejeaftale - lav priotet
+    return updated
+
+
+#Endpoint til sletning af lejeaftale - har lav priotet

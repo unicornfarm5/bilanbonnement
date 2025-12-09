@@ -14,7 +14,7 @@ def show_business_page(session_state_from_ui):
 
     st.title("Business Dashboards")
     # graf 1
-        # giver ikke mening lige nu, men der er er en graf
+        # Lav denne graf om så den rent faktisk viser noget der giver mening
     graph1 = px.bar(get_all_rentals(session_state_from_ui), 
                     x="customer_id", y="rental_start", 
                     title="Nye kunder fordelt på leje start", 
@@ -23,6 +23,7 @@ def show_business_page(session_state_from_ui):
 
     # graf 2
     # https://plotly.com/python/pie-charts/
+        # Lav denne graf om så den rent faktisk virker lol
     graph2 = px.pie(get_all_rentals(session_state_from_ui), 
                     values='rental_type', names='rental_type',
                     color_discrete_sequence=px.colors.sequential.RdBu)

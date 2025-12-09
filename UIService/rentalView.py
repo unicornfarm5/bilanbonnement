@@ -6,26 +6,26 @@ def show_rental_page(session_state_from_ui):
     TOKEN = session_state_from_ui.token
     headers = {"Authorization": f"Bearer {TOKEN}"} if TOKEN else {}
 
+    if "reload_rentals" not in st.session_state: # genindlæsning af data efter opdatering
+        st.session_state.reload_rentals = False
+
     st.title("Dataregistrering")
     # --- Get all_rentals
-    with st.expander("Vis hele rental-databasen"):
-        if not session_state_from_ui.role: 
-            st.error("Du er ikke logget ind")
-        else:
+    
+    if st.button("Hent nyeste data") or st.session_state.reload_rentals:
             try:
-                response = requests.get(f"{RENTALSERVICE}/all_rentals", headers=headers)
+                response = requests.get(
+                     f"{RENTALSERVICE}/all_rentals", 
+                     headers=headers
+                     )
                 if response.status_code == 200:
-                    st.dataframe(response.json())
+                    st.dataframe(response.json()) #viser tabel
                 elif response.status_code in (401, 403):
                     st.error("Du har ikke tilladelse til at se denne data...")
                 else:
                      st.error(f"Fejl: {response.status_code} - {response.text}")
             except Exception as e:
                         st.error(f"Kunne ikke forbinde til API: {str(e)}")
-
-    # --- Søg efter bestemt lejeaftale
-    with st.expander("Søg: Find lejeaftale eller kunde"):
-        st.write("Der burde bare være et søgefelt, burder der ikke ? ")
 
     # --- Opret ny lejeaftale + post til db ---
     with st.expander("Opret ny kunde"):
@@ -35,16 +35,16 @@ def show_rental_page(session_state_from_ui):
         navn = st.text_input("Kunde navn")
         email = st.text_input("Email")
 
-
+    # --- Opret ny lejeaftale --- 
     #Felter til lejeaftale - rental.db
     with st.expander("Opret ny lejeaftale"):
         st.header("Opret ny lejeaftale")
-        customer_id = st.text_input("Customer ID")
-        license_plate = st.text_input("Nummerplade")
+        customer_id = st.text_input("Customer ID") # kunne laves mere brugervenlig, men det er ikke vores fokus
+        license_plate = st.selectbox("Nummerplade",["AB12345", "CT82941", "FD77290", "KM44832", "RV90516"]) #i MVP har vi blot 5 nummerplader tilgængelige på ledige biler i butikken
         rental_start = st.date_input("Startdato")
         rental_end = st.date_input("Slutdato")
-        rental_type = st.selectbox("Type", ["leasing", "abonnement"])
-        price_per_month = st.number_input("Pris pr. måned", min_value=2000.0, step=500)
+        rental_type = st.selectbox("Type af leje", ["leasing", "abonnement"])
+        price_per_month = st.number_input("Pris pr. måned", min_value=2000, step=500)
                 
         #Postes når knap trykkes        
         if st.button("Gem", key="create_rental_btn"):
@@ -57,15 +57,47 @@ def show_rental_page(session_state_from_ui):
                         "price_per_month": price_per_month
                     }
             try:
-                response = requests.post(f"{RENTALSERVICE}/all_rentals", headers=headers, json=payload)
+                response = requests.post(
+                     f"{RENTALSERVICE}/all_rentals", 
+                     headers=headers, 
+                     json=payload
+                     )
                 if response.status_code == 200:
-                    st.success("Lejeaftalen er gemt ")
+                    st.session_state.reload_rentals = True # genindlæser state for at kunne vise de nye opdateringer
+                    st.badge("Lejeaftalen er gemt", icon=":material/check:", color="green")
                 else:
                     st.error("Øv, noget gik galt: " + response.text)
-                    st.error("Husk at id skal være unikt :) ")
+                    st.error("Tip: Husk at id skal være unikt :) ")
             except Exception as e:
                     st.error(f"Hent IT-servicedesk, den er helt gal: {str(e)}")
 
+    # -- Opdater lejeaftale --- 
+    with st.expander("Opdater lejeaftale"):
+         st.header("Opdater slutdato udfra order_id") 
+         order_id = st.text_input("Ordre id")
+         new_rental_end = st.date_input("Ny slutdato")
+
+         if st.button("Gem opdatering", key="update_rental_btn"):
+                payload = {
+                            "rental_end": str(new_rental_end)
+                        }
+                try:
+                    response = requests.put(
+                        f"{RENTALSERVICE}/all_rentals/update/{order_id}", 
+                        headers=headers, 
+                        json=payload
+                        )
+                    if response.status_code == 200:
+                        st.badge("Opdateret slutdato er gemt", icon=":material/check:", color="green")
+                        st.session_state.reload_rentals = True #så nye opdateringer kan ses på siden
+                    else:
+                        st.error("Øv, noget gik galt: " + response.text)
+                        st.error("Tip: Har du givet det korrekte id?")
+                except Exception as e:
+                        st.error(f"Hent IT-servicedesk, den er helt gal: {str(e)}")
+
+
     with st.expander("Slet lejeaftale"):
-        st.write("funktion not added yet")
+        st.write("IT-afdelingen arbejder stadig på denne funktionalitet")
+
 

@@ -95,7 +95,6 @@ def get_all_rentals_db():
     return rentals_list
 
 
-#Opdater en lejeaftale
 def add_rentals_db(
         customer_id, license_plate, rental_start, rental_end, rental_type, price_per_month
         ):
@@ -113,7 +112,6 @@ def add_rentals_db(
         )
         VALUES (?, ?, ?, ?, ?, ?)
     """
-
     cursor.execute(sql, 
         (customer_id, license_plate, rental_start, rental_end, rental_type, price_per_month))
     conn.commit()
@@ -121,7 +119,54 @@ def add_rentals_db(
     # Henter alle rækker efter indsættelsen
     cursor.execute("SELECT * FROM rental")
     rows = cursor.fetchall()
-
     conn.close()
 
     return [dict(row) for row in rows]
+
+
+#Kan opdatere udvalgte felter angivet i updates class (i app.py)
+#ide fra chatGPT
+def update_rentals_db(order_id: int, updates: dict): 
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    set_clause = ", ".join([f"{key} = ?" for key in updates.keys()])
+    values = list(updates.values())
+
+    sql = f"UPDATE rental SET {set_clause} WHERE order_id = ?"
+
+    cursor.execute(sql, values + [order_id])
+    conn.commit()
+
+    cursor.execute("SELECT * FROM rental WHERE order_id = ?", (order_id,))
+    row = cursor.fetchone()
+
+    conn.close()
+    return dict(row) if row else None
+
+
+#Vi prøvede tidligere sådan her hvor vi kun sendte end_date
+"""""
+def update_rentals_db(order_id, new_rental_end):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+"""""
+            UPDATE rental 
+                   SET rental_end = ? 
+                   WHERE order_id = ?
+        """, """(new_rental_end, order_id))
+   
+    conn.commit()
+    cursor.execute("SELECT * FROM rental WHERE order_id = ?", (order_id,))
+    row = cursor.fetchone()
+    conn.close()
+    
+    #Hvis ingen rækker blev opdateret: 
+    if row is None:
+        return None
+    
+    return [dict(row)]
+"""
+

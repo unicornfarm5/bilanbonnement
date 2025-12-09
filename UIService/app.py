@@ -47,7 +47,8 @@ with st.sidebar:
                             st.session_state.auth_token = auth_header
                             st.session_state.token = token #prøver lige at gemme token her
                             st.session_state.role = user_role
-                            st.success("Login successful!")
+                            #st.success("Login successful!")
+                            st.badge("Login succesful", icon=":material/check:", color="green")
                             st.rerun()
                         else:
                             st.error("Invalid token received from server")
@@ -77,3 +78,5 @@ if 'role' in st.session_state:
     else:
         st.write("Ingen view til din rolle endnu :( ")
 
+#Footer
+st.image("image.png", width="content")
