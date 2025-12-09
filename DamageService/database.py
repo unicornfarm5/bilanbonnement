@@ -38,7 +38,7 @@ def init_db():
                    damage_level_id INTEGER NOT NULL, -- Peger på niveauet af skaden
                    damage_description TEXT,
                    damage_price INT,
-                   licensplate TEXT, --mangler foreign key, men hvad menes der?
+                   licensplate TEXT NOT NULL, 
                    order_id INT,
                    FOREIGN KEY (damage_level_id) REFERENCES damage_levels(id), --må kun indeholde ID'er der eksisterer i damage_levels tabel
                    created_at DATETIME DEFAULT current_timestamp
