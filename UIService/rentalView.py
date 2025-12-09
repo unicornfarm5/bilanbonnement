@@ -1,4 +1,4 @@
-from config import RENTALSERVICE
+from config import RENTALSERVICE, CUSTOMERSERVICE
 import streamlit as st
 import requests
 
@@ -10,22 +10,43 @@ def show_rental_page(session_state_from_ui):
         st.session_state.reload_rentals = False
 
     st.title("Dataregistrering")
-    # --- Get all_rentals
     
-    if st.button("Hent nyeste data") or st.session_state.reload_rentals:
-            try:
-                response = requests.get(
-                     f"{RENTALSERVICE}/all_rentals", 
-                     headers=headers
-                     )
-                if response.status_code == 200:
-                    st.dataframe(response.json()) #viser tabel
-                elif response.status_code in (401, 403):
-                    st.error("Du har ikke tilladelse til at se denne data...")
-                else:
-                     st.error(f"Fejl: {response.status_code} - {response.text}")
-            except Exception as e:
-                        st.error(f"Kunne ikke forbinde til API: {str(e)}")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        # --- Get all_rentals
+        if st.button("Vis alle lejeaftaler", key="hent_ny_data") or st.session_state.reload_rentals:
+                try:
+                    response = requests.get(
+                        f"{RENTALSERVICE}/all_rentals", 
+                        headers=headers
+                        )
+                    if response.status_code == 200:
+                        st.dataframe(response.json()) #viser tabel
+                    elif response.status_code in (401, 403):
+                        st.error("Du har ikke tilladelse til at se denne data...")
+                    else:
+                        st.error(f"Fejl: {response.status_code} - {response.text}")
+                except Exception as e:
+                            st.error(f"Kunne ikke forbinde til API: {str(e)}")
+
+    with col2:
+        # --- Get all customers
+           if st.button("Vis alle kunder", key="hent nyeste customer") or st.session_state.reload_rentals:
+                try:
+                    response = requests.get(
+                        f"{CUSTOMERSERVICE}/all_customers", 
+                        headers=headers
+                        )
+                    if response.status_code == 200:
+                        st.dataframe(response.json()) #viser tabel
+                    elif response.status_code in (401, 403):
+                        st.error("Du har ikke tilladelse til at se denne data...")
+                    else:
+                        st.error(f"Fejl: {response.status_code} - {response.text}")
+                except Exception as e:
+                            st.error(f"Kunne ikke forbinde til API: {str(e)}")
+
 
     # --- Opret ny lejeaftale + post til db ---
     with st.expander("Opret ny kunde"):
@@ -72,9 +93,9 @@ def show_rental_page(session_state_from_ui):
                     st.error(f"Hent IT-servicedesk, den er helt gal: {str(e)}")
 
     # -- Opdater lejeaftale --- 
-    with st.expander("Opdater lejeaftale"):
-         st.header("Opdater slutdato udfra order_id") 
-         order_id = st.text_input("Ordre id")
+    with st.expander("Opdater lejeaftale: lejeperiode slutdato"):
+         st.header("Opdater slutdato for lejeperiode i ordre") 
+         order_id = st.text_input("Angiv ordre id til den ordre der skal rettes")
          new_rental_end = st.date_input("Ny slutdato")
 
          if st.button("Gem opdatering", key="update_rental_btn"):

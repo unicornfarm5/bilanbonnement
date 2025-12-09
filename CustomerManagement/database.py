@@ -1,6 +1,5 @@
 import sqlite3
 import os
-from flask import jsonify
 
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'rental.db')
 
@@ -78,7 +77,7 @@ def seed_customers():
 
 
 ######## -- Funktioner i databasen -- #########
-def get_all_cusomers_db():
+def get_all_customers_db():
     conn = get_db_connection()
     cursor = conn.cursor()
 
