@@ -14,9 +14,7 @@ services:
     depends_on:
       - accountservice
       - rentalservice
-
       
-
   accountservice:
     build:
       context: ./AccountService

@@ -82,7 +82,7 @@ def seed_rentals():
 
 
 
-######## -- Endpoints -- #########
+######## -- Funktioner i databasen -- #########
 def get_all_rentals_db():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -93,3 +93,35 @@ def get_all_rentals_db():
 
     rentals_list = [dict(row) for row in rentals]
     return rentals_list
+
+
+#Opdater en lejeaftale
+def add_rentals_db(
+        customer_id, license_plate, rental_start, rental_end, rental_type, price_per_month
+        ):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql = """
+        INSERT INTO rental (
+            customer_id, 
+            license_plate, 
+            rental_start, 
+            rental_end, 
+            rental_type, 
+            price_per_month
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+    """
+
+    cursor.execute(sql, 
+        (customer_id, license_plate, rental_start, rental_end, rental_type, price_per_month))
+    conn.commit()
+
+    # Henter alle rækker efter indsættelsen
+    cursor.execute("SELECT * FROM rental")
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return [dict(row) for row in rows]
