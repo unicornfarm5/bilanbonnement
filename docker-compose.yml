@@ -14,9 +14,8 @@ services:
     depends_on:
       - accountservice
       - rentalservice
-
+      - customerservice
       
-
   accountservice:
     build:
       context: ./AccountService
@@ -57,6 +56,20 @@ services:
     depends_on:
       - rentalservice
 
+  customerservice:
+    build:
+      context: ./CustomerManagement
+      dockerfile: Dockerfile
+    environment:
+        - KEY=${KEY}
+    ports:
+      - "5001:5000"
+    networks:
+      - app-network
+    restart: unless-stopped
+    depends_on:
+      - accountservice
+
   ui:
     build:
       context: ./UIService
@@ -71,6 +84,7 @@ services:
     depends_on:
       - accountservice
       - rentalservice
+      - customerservice
 
 networks:
   app-network:

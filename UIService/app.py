@@ -2,6 +2,7 @@ import streamlit as st
 import requests 
 import jwt  
 from rentalView import show_rental_page #funktion til rental view
+from businessView import show_business_page #funktion til business view
 
 #Service overblik fra CONFIG FILEN HVOR LISTEN FINDES 
 from config import RENTALSERVICE, ACCOUNTSERVICE
@@ -46,7 +47,8 @@ with st.sidebar:
                             st.session_state.auth_token = auth_header
                             st.session_state.token = token #prøver lige at gemme token her
                             st.session_state.role = user_role
-                            st.success("Login successful!")
+                            #st.success("Login successful!")
+                            st.badge("Login succesful", icon=":material/check:", color="green")
                             st.rerun()
                         else:
                             st.error("Invalid token received from server")
@@ -61,48 +63,21 @@ with st.sidebar:
 
 # Tjek af rolle, laver view efter det og sender TOKEN med (via st.session_state)
 if 'role' in st.session_state:
-    st.write(f"Du ser ud til at være i denne afdeling: : {st.session_state.role}")
+    st.write(f"Velkommen {st.session_state.username} , du ser funktionalitet tilhørende: {st.session_state.role}")
 
     SESSION_STATE = st.session_state
 
     if st.session_state.role == "rental":
         show_rental_page(SESSION_STATE) #funktion fra rentalView.py
 
-        """ kommer snart :) 
-    #elif st.session_state.role == "damage": 
-        #show_damage_page(SESSION_STATE)
-
-    elif st.session_state.role == "business": 
-            show_reader_page(SESSION_STATE)
-        """
+    #elif st.session_state.role == "damage": # kommer snart
+        
+    elif st.session_state.role == "business":     
+        show_business_page(SESSION_STATE) #funktion fra businessView.py
+       
     else:
         st.write("Ingen view til din rolle endnu :( ")
 
 
-
-
-#gammel måde for referance (her var det jo kun rental)
-"""
-    if st.session_state.role  == "rental":
-        TOKEN = st.session_state.token
-        headers = {"Authorization": f"Bearer {TOKEN}"} if TOKEN else {}
-        if st.button("Vis hele rental-databasen"):
-            if not st.session_state.role: 
-                st.error("Du er ikke logget ind ordenligt tror vi")
-            else:
-                try:
-                    response = requests.get(f"{RENTALSERVICE}/all_rentals", headers=headers)
-
-                    if response.status_code == 200:
-                        st.write(response.json())
-                    elif response.status_code in (401, 403):
-                        st.error("Du har ikke tilladelse til at se denne data... ")
-                    else:
-                        st.error(f"Fejl: {response.status_code} - {response.text}")
-
-                except Exception as e:
-                    st.error(f"Kunne ikke forbinde til API: {str(e)}")
-
-    elif st.session_state.role == "reader":
-        st.write("Du er ikke logget ind eller er ikke i en relevant afdeling")
-"""
+#Footer
+st.image("image.png", width="content")
