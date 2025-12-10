@@ -78,5 +78,6 @@ if 'role' in st.session_state:
     else:
         st.write("Ingen view til din rolle endnu :( ")
 
+
 #Footer
 st.image("image.png", width="content")
