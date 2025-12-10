@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
-from DamageService.damageDatabase import init_db, get_price_from_level, insert_damage, get_damage_history
+from DamageService.damageDatabase import init_db, get_price_from_level, insert_damage, get_damage_history, seed_damages
 from rental_search_api import RentalCheck
 from datetime import datetime
 from typing import Optional
@@ -9,6 +9,7 @@ load_dotenv() # Load miljøvariabler
 rental_check = RentalCheck() # opret klientinstans
 app = FastAPI() # Opret FastApi app
 init_db() # Initialiser database ved app-start
+seed_damages()  # Fyld med test-data
 
 
 # ============ Health Check (Fra chatten) ============
