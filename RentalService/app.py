@@ -3,9 +3,12 @@ from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.security import HTTPBearer
 from dotenv import load_dotenv
 from flask import jsonify, request, make_response
-from rentalDatabase import init_db, get_all_rentals_db, seed_rentals
+from rentalDatabase import init_db, get_all_rentals_db, seed_rentals, get_db_connection
+from typing import Optional
 import os
 import jwt
+
+
 
 #Loader .env, KEY til jwt-token
 load_dotenv()
@@ -66,3 +69,33 @@ def get_all_rentals(authorization: str = Header(None)):
 
     rentals = get_all_rentals_db()
     return rentals
+
+
+@app.get("/rentals/{order_id}")
+def get_rental(order_id: int):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM rental WHERE order_id = ?', (order_id,))
+    rental = cursor.fetchone()
+    conn.close()
+    
+    if not rental:
+        raise HTTPException(status_code=404, detail=f"order_id {order_id} findes ikke")
+    
+    return dict(rental)
+
+
+@app.get("/rentals")
+def get_rentals_by_plate(license_plate: Optional[str] = None):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    if license_plate:
+        cursor.execute('SELECT * FROM rental WHERE license_plate = ?', (license_plate,))
+    else:
+        cursor.execute('SELECT * FROM rental')
+    
+    rentals = cursor.fetchall()
+    conn.close()
+    
+    return [dict(r) for r in rentals]

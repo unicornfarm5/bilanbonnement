@@ -33,7 +33,7 @@ class RentalCheck:
             response = requests.get(
                f"{self.base_url}/rentals/",
                params={'licens_plate': licens_plate}, #???
-               timeout=self.timeout 
+               timeout=self.timeout
             )
             if response.status_code == 200: #Hvis licens_plate findes
                 data = response.json()
