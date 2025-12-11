@@ -121,3 +121,17 @@ def get_damage_history(license_plate):
     rows = cursor. fetchall()
     conn.close()
     return [dict(r) for r in rows] #???
+
+def get_all_damages():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT d.damage_report_id, d.damage_description, d.damage_price, d.licensplate, d.order_id, d.created_at,
+               dl.level_name AS damage_level_name, dl.price AS level_price
+        FROM damage d
+        LEFT JOIN damage_levels dl ON d.damage_level_id = dl.level_id
+        ORDER BY d.created_at DESC
+    ''')
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]

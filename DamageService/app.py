@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
-from damageDatabase import init_db, get_price_from_level, insert_damage, get_damage_history, seed_damages
+from damageDatabase import init_db, get_price_from_level, insert_damage, get_damage_history, seed_damages, get_all_damages
 from rental_search_api import RentalCheck
 from datetime import datetime
 from typing import Optional
@@ -23,7 +23,7 @@ def health():
 @app.post("/damage")
 def create_damage_report(data: dict):
     try:
-        # Validér om felt er udfyldt
+        """# Validér om felt er udfyldt
         if not data.get('licensplate'):
             raise HTTPException(status_code=400, detail='licensplate er påkrævet')
         if not data.get('damage_level_id'):
@@ -56,6 +56,7 @@ def create_damage_report(data: dict):
                     status_code=503, 
                     detail=f'Kunne ikke validere ordre: {str(e)}'
                 )
+                """
         
         # Find pris ud fra damage_levels
         damage_price = get_price_from_level(data['damage_level_id'])
@@ -88,6 +89,19 @@ def create_damage_report(data: dict):
 
 
 # ============= GET route ================
+@app.get("/damage/all")
+def get_all():
+    try:
+        damages = get_all_damages()
+        if not damages:
+            return {
+                'message': 'Ingen skader fundet',
+                'damages': []
+            }
+        return {'damages': damages}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f'Kunne ikke hente alle skader: {str(e)}')
+
 @app.get("/damage/{licens_plate}")
 def get_history(licens_plate: str): #Henter alle skadehistorik for licensplate
     try:
@@ -102,7 +116,6 @@ def get_history(licens_plate: str): #Henter alle skadehistorik for licensplate
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'Kunne ikke hente historik: {str(e)}')
-
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=5002)
