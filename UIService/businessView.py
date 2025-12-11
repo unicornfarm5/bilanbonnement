@@ -2,9 +2,10 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 from datetime import datetime
+import plotly.graph_objects as go
 import requests
 
-from config import RENTALSERVICE
+from config import RENTALSERVICE, CUSTOMERSERVICE
 
 
 def show_business_page(session_state_from_ui):

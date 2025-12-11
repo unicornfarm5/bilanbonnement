@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.security import HTTPBearer
 from dotenv import load_dotenv
-from database import init_db, seed_customers, get_all_customers_db
+from database import init_db, seed_customers, get_all_customers_db, get_all_customer_id_db
 import os
 import jwt
 #Loader .env, KEY til jwt-token
@@ -50,8 +50,31 @@ def get_all_customers(
     role, err = get_role_from_token(auth_token)
     if err:
         return {"message": err}, 401
-    if role != "rental":  #VIGTIGT: kun rental-medarbejdere i rental har adgang til alt kunde data
+    if role != "rental":  #VIGTIGT: kun rental-medarbejdere i rental har adgang til alt kunde-data
         return {"message": f"Din rolle: {role} har ikke adgang til denne information"}, 403
 
     rentals = get_all_customers_db()
+    return rentals
+
+
+#get only customer id
+@app.get("/all_customer_id")
+def get_all_customer_id(
+    authorization: str = Header(None)
+):
+    if authorization is None:
+        return {"message": "Missing Authorization header"}, 401
+
+    # Fjern 'Bearer ' prefix
+    if authorization.startswith("Bearer "):
+        auth_token = authorization[7:]
+    else:
+        auth_token = authorization
+    role, err = get_role_from_token(auth_token)
+    if err:
+        return {"message": err}, 401
+    if role != "business":  #VIGTIGT: kun business behøves bruge dette endpoint - det er så de ikke kan få personlig data som tlf og mail på kunder. men kun id
+        return {"message": f"Din rolle: {role} har ikke adgang til denne information"}, 403
+
+    rentals = get_all_customer_id_db()
     return rentals

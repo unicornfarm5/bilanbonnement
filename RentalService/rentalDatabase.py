@@ -238,13 +238,12 @@ def seed_rentals():
 def get_all_rentals_db():
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM rental")
-    rentals = cursor.fetchall()
-    conn.close()
-
-    rentals_list = [dict(row) for row in rentals]
-    return rentals_list
+    try:
+        cursor.execute("SELECT * FROM rental")
+        rentals = cursor.fetchall()
+        return [dict(row) for row in rentals]
+    finally:
+        conn.close() #sørger for at vi altid lukker connection så der ikke er en forespørgsel der holder låsen
 
 
 def add_rentals_db(
@@ -252,28 +251,28 @@ def add_rentals_db(
         ):
     conn = get_db_connection()
     cursor = conn.cursor()
+    try:
+        sql = """
+            INSERT INTO rental (
+                customer_id, 
+                license_plate, 
+                rental_start, 
+                rental_end, 
+                rental_type, 
+                price_per_month
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """
+        cursor.execute(sql, 
+            (customer_id, license_plate, rental_start, rental_end, rental_type, price_per_month))
+        conn.commit()
 
-    sql = """
-        INSERT INTO rental (
-            customer_id, 
-            license_plate, 
-            rental_start, 
-            rental_end, 
-            rental_type, 
-            price_per_month
-        )
-        VALUES (?, ?, ?, ?, ?, ?)
-    """
-    cursor.execute(sql, 
-        (customer_id, license_plate, rental_start, rental_end, rental_type, price_per_month))
-    conn.commit()
-
-    # Henter alle rækker efter indsættelsen
-    cursor.execute("SELECT * FROM rental")
-    rows = cursor.fetchall()
-    conn.close()
-
-    return [dict(row) for row in rows]
+        # Henter alle rækker efter indsættelsen
+        cursor.execute("SELECT * FROM rental")
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
+    finally:
+        conn.close()
 
 
 #Kan opdatere udvalgte felter angivet i updates class (i app.py)
@@ -281,20 +280,20 @@ def add_rentals_db(
 def update_rentals_db(order_id: int, updates: dict): 
     conn = get_db_connection()
     cursor = conn.cursor()
+    try:
+        set_clause = ", ".join([f"{key} = ?" for key in updates.keys()])
+        values = list(updates.values())
 
-    set_clause = ", ".join([f"{key} = ?" for key in updates.keys()])
-    values = list(updates.values())
+        sql = f"UPDATE rental SET {set_clause} WHERE order_id = ?"
 
-    sql = f"UPDATE rental SET {set_clause} WHERE order_id = ?"
+        cursor.execute(sql, values + [order_id])
+        conn.commit()
 
-    cursor.execute(sql, values + [order_id])
-    conn.commit()
-
-    cursor.execute("SELECT * FROM rental WHERE order_id = ?", (order_id,))
-    row = cursor.fetchone()
-
-    conn.close()
-    return dict(row) if row else None
+        cursor.execute("SELECT * FROM rental WHERE order_id = ?", (order_id,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
+    finally: 
+         conn.close()
 
 
 #Vi prøvede tidligere sådan her hvor vi kun sendte end_date

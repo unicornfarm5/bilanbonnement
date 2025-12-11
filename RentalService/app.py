@@ -149,7 +149,7 @@ def update_rental(
     if err:
         raise HTTPException(status_code=401, detail=err)
 
-    if role != "rental":
+    if role != "rental": # KUN medarbejdere i rental kan opdatgere
         raise HTTPException(status_code=403, detail=f"Din rolle: {role} har ikke adgang")
 
     # Kald databasefunktion og bruger basemodel
