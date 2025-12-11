@@ -47,7 +47,7 @@ services:
       context: ./DamageService
       dockerfile: Dockerfile
     environment:
-      - RENTAL_SERVICE_URL=http://rentalservice:5000
+      - KEY=${KEY}
     ports:
       - "5002:5002"
     networks:

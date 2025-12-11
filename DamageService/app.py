@@ -1,6 +1,7 @@
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
-from DamageService.damageDatabase import init_db, get_price_from_level, insert_damage, get_damage_history, seed_damages
+from damageDatabase import init_db, get_price_from_level, insert_damage, get_damage_history, seed_damages
 from rental_search_api import RentalCheck
 from datetime import datetime
 from typing import Optional
@@ -23,7 +24,7 @@ def health():
 def create_damage_report(data: dict):
     try:
         # Validér om felt er udfyldt
-        if not data.get('licens_plate'):
+        if not data.get('licensplate'):
             raise HTTPException(status_code=400, detail='licensplate er påkrævet')
         if not data.get('damage_level_id'):
             raise HTTPException(status_code=400, detail='damage_level_id er påkrævet')
@@ -74,7 +75,7 @@ def create_damage_report(data: dict):
         )
 
         return{ # og her??
-             'damage_report_id': damage_id,
+            'damage_report_id': damage_id,
             'damage_price': damage_price,
             'licensplate': data['licensplate'],
             'created_at': datetime.now().isoformat()
@@ -101,3 +102,7 @@ def get_history(licens_plate: str): #Henter alle skadehistorik for licensplate
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'Kunne ikke hente historik: {str(e)}')
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=5002)

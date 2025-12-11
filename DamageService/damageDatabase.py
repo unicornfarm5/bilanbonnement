@@ -15,11 +15,47 @@ def init_db():
     conn.execute("PRAGMA foreign_keys = ON") # Aktiverer FK-constraints
     cursor = conn.cursor()
 
-# Fra chatten så tabeller ikke er tomme
+    # Opret opslagstabeller, hvis de ikke findes
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS damage_levels (
+            level_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            level_name TEXT UNIQUE NOT NULL,
+            price INT NOT NULL
+        )
+    ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS damage (
+            damage_report_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            damage_level_id INTEGER NOT NULL,
+            damage_description TEXT,
+            damage_price INT,
+            licensplate TEXT NOT NULL,
+            order_id INT,
+            created_at DATETIME DEFAULT current_timestamp,
+            FOREIGN KEY (damage_level_id) REFERENCES damage_levels(level_id)
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+# Seed af tabeller så de ikke er tomme - fra chatten
 def seed_damages():
     """Indsæt test-data i damage-tabel hvis den er tom"""
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    # Sørg for at damage_levels er udfyldt inden vi inserter skader
+    levels = [
+        ('ingen', 0),
+        ('let', 500),
+        ('middel', 1500),
+        ('svær', 3000),
+        ('kritisk', 5000)
+    ]
+    cursor.executemany('INSERT OR IGNORE INTO damage_levels (level_name, price) VALUES (?, ?)', levels)
+    conn.commit()
     
     # Tjek om tabel allerede har data
     cursor.execute('SELECT COUNT(*) as count FROM damage')
@@ -48,50 +84,12 @@ def seed_damages():
         print("✔ Damages already exist. Seed skipped.")
     
     conn.close()
-    
-#Opret damage_levels table til opslag
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS damage_levels (
-                   level_id INT PRIMARY KEY AUTOINCREMENT,
-                   level_name TEXT UNIQUE NOT NULL,
-                   price INT NOT NULL
-     )
- ''')
-    #Tuple med damage levels
-    levels = [
-        ('ingen', 0),
-        ('let', 500),
-        ('middel', 1500),
-        ('svær', 3000),
-        ('kritisk', 5000)
-    ]
-    
-    cursor.executemany('INSERT OR IGNORE INTO damage_levels (level_name, price) VALUES (?, ?)', levels) 
-
-#Opret damage table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS damage (
-                   damage_report_id INT PRIMARY KEY AUTOINCREMENT,
-                   damage_level_id INTEGER NOT NULL, -- Peger på niveauet af skaden
-                   damage_description TEXT,
-                   damage_price INT,
-                   licensplate TEXT NOT NULL, 
-                   order_id INT,
-                   FOREIGN KEY (damage_level_id) REFERENCES damage_levels(level_id), --må kun indeholde ID'er der eksisterer i damage_levels tabel
-                   created_at DATETIME DEFAULT current_timestamp
-                   )
-                ''')
-    conn.commit()
-    conn.close()
-
-#SEED TABLES HER!
-
 
 #Slå pris op fra damage_levels
 def get_price_from_level(level_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT price FROM damage_levels WHERE id = ?', (level_id))
+    cursor.execute('SELECT price FROM damage_levels WHERE level_id = ?', (level_id,))
     row = cursor.fetchone() #??
     return row['price'] if row else None
 
@@ -114,9 +112,9 @@ def get_damage_history(license_plate):
     cursor = conn.cursor() #SELECT taget fra chatten
     cursor.execute(''' 
         SELECT d.damage_report_id, d.damage_description, d.damage_price, d.order_id, d.created_at,
-               dl.level_name AS damage_level_name, dl.price AS level_price
-        FROM damage d
-        LEFT JOIN damage_levels dl ON d.damage_level_id = dl.id
+             dl.level_name AS damage_level_name, dl.price AS level_price
+         FROM damage d
+         LEFT JOIN damage_levels dl ON d.damage_level_id = dl.level_id
         WHERE d.licensplate = ?
         ORDER BY d.created_at DESC
     ''', (license_plate,))

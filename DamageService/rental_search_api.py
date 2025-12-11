@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 class RentalCheck:
     def __init__(self):
          #Fra chatten: Hent URL fra miljøvariabel eller default til localhost
-        self.base_url = os.getenv('RENTAL_SERVICE_URL', 'http://localhost:5001')
+        self.base_url = os.getenv('RENTAL_SERVICE_URL', 'http://localhost:5000')
         self.timeout = 2  # timeout på 2 sekunder
 
     """Tjekker om order_id findes i RentalService"""

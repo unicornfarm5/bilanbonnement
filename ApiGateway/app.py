@@ -21,7 +21,7 @@ jwt = JWTManager(app)
 services = {
     "accountservice": "http://accountservice:5000",
     "rentalservice": "http://rentalservice:5000",
-    "customerservice": "http://customerservice:5000"
+    "customerservice": "http://customerservice:5000",
     "rentalservice": "http://rentalservice:5000",
     "damageservice": "http://damageservice:5002"
 }
