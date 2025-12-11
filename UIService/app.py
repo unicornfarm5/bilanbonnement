@@ -3,6 +3,7 @@ import requests
 import jwt  
 from rentalView import show_rental_page #funktion til rental view
 from businessView import show_business_page #funktion til business view
+from damageView import show_damage_page
 
 #Service overblik fra CONFIG FILEN HVOR LISTEN FINDES 
 from config import RENTALSERVICE, ACCOUNTSERVICE
@@ -70,7 +71,8 @@ if 'role' in st.session_state:
     if st.session_state.role == "rental":
         show_rental_page(SESSION_STATE) #funktion fra rentalView.py
 
-    #elif st.session_state.role == "damage": # kommer snart
+    elif st.session_state.role == "damage": # kommer snart
+        show_damage_page(SESSION_STATE)
         
     elif st.session_state.role == "business":     
         show_business_page(SESSION_STATE) #funktion fra businessView.py
