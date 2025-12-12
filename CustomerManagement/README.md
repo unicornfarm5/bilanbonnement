@@ -4,7 +4,7 @@
 Ports:
 ```
    ports:
-      - "8000:5000"  // - så port 8000 localt - port 5000 med docker
+      - "5001:5000"  // - så port 5001 localt - port 5000 med docker
 ```   
 ## Endpoints:
 - ` GET  /all_customers` - henter alt kundedata. Kun dataregistrering (rolle = "rental") har adgang
@@ -34,12 +34,13 @@ CREATE TABLE customer (
 - Framework: bruger FASTapi
 - Dataen fremvises i frontend og servicen kaldes med og fra:
   - ` GET /all_customers_id  ` i `businesView.py` i UIService
+  - ` GET /all_customers  ` i `rentalView.py` i UIService
     
 - Docker klarer selv dependencies fra requirements.txt, så det skal du ikke tænke på
 - **Deployment:** the service starts with docker alongside all other services during `docker-compose up`
   - but you can start customerservice as single with `docker-compose up customerservice`
 
-## Filstruktur i API Gateway
+## Filstruktur i customerservice
 ```
 /apigateway
 │
