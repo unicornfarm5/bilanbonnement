@@ -25,15 +25,16 @@
 
 
 ## Wanna develop with us ?
-✨UNDER UDVIKLING HVOR DU VIL KØRE EN APP.PY LOKALT, LAV EN VENV I HVER MICROSERVICE MAPPE
-SØRG FOR AT GÅ IND I HVER MAPPE (cd navnPåService) OG SKRIV
+✨Under udvikling hvor du vil køre en app.py lokalt, lav et virtuelt vilmø ( .venv ) i hver microservice mappe
+Guide:
+- sørg for at gå ind i hver mappe (cd navnpåservice) og skriv for at oprette og aktivere en venv: 
 
         python -m venv venv
         source venv/Scripts/activate   
 
-for at oprette og aktivere en venv
-INSTALLERER DU NOGLE NYE DEPENDECIES, SÅ husk at KØRE INDE I MAPPEN
+
+- INSTALLERER DU NOGLE NYE DEPENDECIES, SÅ husk at KØRE INDE I MAPPEN
 ```
         pip freeze > requirements.txt
 ```
-SÅ VORES DOCKER COMPUTER OGSÅ VED AT DINE TILFØJEDE DEPENDECIES SKAL MED
+- Så vores docker computer også ved at dine tilføjede dependecies skal med
