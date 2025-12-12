@@ -3,14 +3,14 @@
 ### Om:
 Man kan logge ind som følgende medarbejdere, med tilhørende roller. Rollerne determinerer hvilken frontend der vises, og hvilke funktionaliteter de har adgang til
 
-| Afdeling | Rolle | username | password |
-| ----------- | ----------- |
+| Afdeling | Rolle - gemmes i JWT | username | password |
+| ----------- | ----------- | ----------- | ----------- |
 | Dataregistrering | rental | alice | password123 |
 | Skaderapportering | damage | bob | password123 |
 | Forretningsudvikling | business | carla | password123 |
 
 Endpoints:
-- `post /login` - logger brugere ind
+- `post /login` - logger brugere ind og svarer med JWT
 
 
 
