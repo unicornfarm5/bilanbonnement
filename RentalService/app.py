@@ -5,9 +5,12 @@ from dotenv import load_dotenv
 from flask import jsonify, request, make_response
 from flask_jwt_extended import jwt_required
 from pydantic import BaseModel
-from rentalDatabase import init_db, get_all_rentals_db, seed_rentals, add_rentals_db, update_rentals_db
+from rentalDatabase import init_db, get_all_rentals_db, seed_rentals, add_rentals_db, update_rentals_db, get_db_connection
+from typing import Optional
 import os
 import jwt
+
+
 
 #Loader .env, KEY til jwt-token
 load_dotenv()

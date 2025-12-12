@@ -3,5 +3,5 @@
 ACCOUNTSERVICE = "http://apigateway:5000/accountservice"
 RENTALSERVICE = "http://apigateway:5000/rentalservice"
 CUSTOMERSERVICE = "http://apigateway:5000/customerservice"
-#damage here
+DAMAGESERVICE = "http://apigateway:5000/damageservice"
 

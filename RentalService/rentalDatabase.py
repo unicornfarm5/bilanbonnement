@@ -25,7 +25,7 @@ def init_db():
         CREATE TABLE rental (
             order_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_id TEXT UNIQUE NOT NULL,
-            license_plate TEXT NOT NULL,
+            license_plate TEXT UNIQUE NOT NULL, -- Sat UNIQUE ind men skal måske laves om
             rental_start DATE NOT NULL,
             rental_end DATE NOT NULL,
             rental_type TEXT NOT NULL CHECK (rental_type IN ('leasing', 'abonnement')),
