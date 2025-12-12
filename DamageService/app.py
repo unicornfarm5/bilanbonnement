@@ -102,6 +102,7 @@ def get_all():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'Kunne ikke hente alle skader: {str(e)}')
 
+#get damage rapport for car with licens plate
 @app.get("/damage/{licens_plate}")
 def get_history(licens_plate: str): #Henter alle skadehistorik for licensplate
     try:
