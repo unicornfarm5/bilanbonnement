@@ -1,5 +1,5 @@
 # SQLite database file
-customer.db
+rental.db
 
 # Environment variables
 .env
