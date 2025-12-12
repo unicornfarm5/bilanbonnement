@@ -23,41 +23,6 @@ def health():
 @app.post("/damage")
 def create_damage_report(data: dict):
     try:
-        """# Validér om felt er udfyldt
-        if not data.get('licensplate'):
-            raise HTTPException(status_code=400, detail='licensplate er påkrævet')
-        if not data.get('damage_level_id'):
-            raise HTTPException(status_code=400, detail='damage_level_id er påkrævet')
-        
-        # Validér om licensplate findes
-        try:
-            if not rental_check.validate_license_plate(data['licensplate']): #??
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"licensplate {data['licensplate']} findes ikke"
-                )
-        except Exception as e:
-            #Hvis RentalService er nede
-            raise HTTPException(
-                status_code=503,
-                detail=f'Kunne ikke validere licensplate: {str(e)}' #??
-            )
-        
-         # 3. Validér order_id hvis den er givet
-        if data.get('order_id'):
-            try:
-                if not rental_check.validate_order_id(data['order_id']):
-                    raise HTTPException(
-                        status_code=400, 
-                        detail=f"order_id {data['order_id']} findes ikke i RentalService"
-                    )
-            except Exception as e:
-                raise HTTPException(
-                    status_code=503, 
-                    detail=f'Kunne ikke validere ordre: {str(e)}'
-                )
-                """
-        
         # Find pris ud fra damage_levels
         damage_price = get_price_from_level(data['damage_level_id'])
         if damage_price is None:
