@@ -1,9 +1,10 @@
-👩🏽‍💻✨Guide til dig der åbner for første gang✨👩🏽‍💻
- - Du skal oprette en fil der hedder .env i RODEN af projektet. I den skal du skrive KEY= og så et eller andet sammenhængende
+# 👩🏽‍💻✨Step-by-step guide til dig der åbner for første gang✨👩🏽‍💻
+ - Du **skal** oprette en fil der hedder .env i RODEN af projektet. I den skal du skrive KEY= og så et eller andet sammenhængende
  - Sørg for at du har docker desktop åbn
- - Så skal du åbne terminalen og skrive:        docker-compose up --build
- - Gå ind på localhost:8501 for at se vores frontend
- - Nu kan du logge ind som en af medarbejderene. Se mere herom i README.md i AccountService
+ - Så skal du åbne terminalen og skrive: `docker-compose up --build`
+ - **Gå ind på localhost:8501 for at se vores frontend**
+ - Du **skal** logge ind som en medarbejder. **Se login olysninger i README.md i AccountService**
+***
 
 ## How to run the app with docker
 ```
@@ -20,11 +21,11 @@
  ✨✨✨  docker-compose down
 
 ```
-Du behøves altså ikke at downloade noget spicy, det er docker der kører det hele :)
+*Du behøves altså ikke at opsætte .venv eller downloade noget spicy requirements, det er docker der kører det hele ;)*
 
 
-
-✨UNDER UDVIKLING SKAL DU LAVE EN VENV I HVER MICROSERVICE MAPPE (lige nu har vi dog glemt at sætte dem i .gitignore så er ikke sikker på om i behøves det. Det fikses senere)
+## Wanna develop with us ?
+✨UNDER UDVIKLING HVOR DU VIL KØRE EN APP.PY LOKALT, LAV EN VENV I HVER MICROSERVICE MAPPE
 SØRG FOR AT GÅ IND I HVER MAPPE (cd navnPåService) OG SKRIV
 
         python -m venv venv
