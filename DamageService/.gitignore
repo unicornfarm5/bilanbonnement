@@ -1,13 +1,9 @@
 # SQLite database file
-users.db
+damage.db
 
 # Environment variables
 .env
 .venv
-venv/
-**/venv/
-**/.venv/
-
 
 # Python cache
 __pycache__/
