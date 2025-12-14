@@ -49,7 +49,7 @@ class UpdateRentalInput(BaseModel):
 
 ## Databasedesign
 - Databasen bruger SQLite
-- Indeholder **et tal der skal opdateres men måske er 150⚠️⚠️⚠️⚠️** lejeaftaler ved applikationsstart
+- Indeholder **150** lejeaftaler ved applikationsstart
 - Funktionalitet til sletning af lejeaftaler er ikke implementeret i MVP
 ### Entiteter :
 ```

@@ -42,24 +42,24 @@ def seed_customers():
 
         if count == 0:
             customers_data = [
-                ('CUST001', 'Alice Jensen', 'alice.jensen@email.com', 12345678, 1),
-                ('CUST002', 'Brian Nielsen', 'brian.nielsen@email.com', 23456789, 2),
-                ('CUST003', 'Carla Hansen', 'carla.hansen@email.com', 34567890, 3),
-                ('CUST004', 'David Larsen', 'david.larsen@email.com', 45678901, 4),
-                ('CUST005', 'Emma Pedersen', 'emma.pedersen@email.com', 56789012, 5),
-                ('CUST006', 'Frederik Sørensen', 'frederik.sorensen@email.com', 67890123, 6),
-                ('CUST007', 'Gitte Madsen', 'gitte.madsen@email.com', 78901234, 7),
-                ('CUST008', 'Henrik Kristensen', 'henrik.kristensen@email.com', 89012345, 8),
-                ('CUST009', 'Isabella Thomsen', 'isabella.thomsen@email.com', 90123456, 9),
-                ('CUST010', 'Jakob Olsen', 'jakob.olsen@email.com', 11234567, 10),
-                ('CUST011', 'Katrine Poulsen', 'katrine.poulsen@email.com', 22345678, 11),
-                ('CUST012', 'Lars Andersen', 'lars.andersen@email.com', 33456789, 12),
-                ('CUST013', 'Maria Rasmussen', 'maria.rasmussen@email.com', 44567890, 13),
-                ('CUST014', 'Nikolaj Mortensen', 'nikolaj.mortensen@email.com', 55678901, 14),
-                ('CUST015', 'Olivia Kristoffersen', 'olivia.kristoffersen@email.com', 66789012, 15),
-                ('CUST016', 'Peter Holm', 'peter.holm@email.com', 77890123, None), #De sidste 3 kunder her har ikke en ordre tilknyttet ved app start
-                ('CUST017', 'Rikke Jensen', 'rikke.jensen@email.com', 88901234, None),
-                ('CUST018', 'Søren Møller', 'soeren.moeller@email.com', 99012345, None),
+                ('CU001', 'Alice Jensen', 'alice.jensen@email.com', 12345678, 1),
+                ('CU002', 'Brian Nielsen', 'brian.nielsen@email.com', 23456789, 2),
+                ('CU003', 'Carla Hansen', 'carla.hansen@email.com', 34567890, 3),
+                ('CU004', 'David Larsen', 'david.larsen@email.com', 45678901, 4),
+                ('CU005', 'Emma Pedersen', 'emma.pedersen@email.com', 56789012, 5),
+                ('CU006', 'Frederik Sørensen', 'frederik.sorensen@email.com', 67890123, 6),
+                ('CU007', 'Gitte Madsen', 'gitte.madsen@email.com', 78901234, 7),
+                ('CU008', 'Henrik Kristensen', 'henrik.kristensen@email.com', 89012345, 8),
+                ('CU009', 'Isabella Thomsen', 'isabella.thomsen@email.com', 90123456, 9),
+                ('CU010', 'Jakob Olsen', 'jakob.olsen@email.com', 11234567, 10),
+                ('CU011', 'Katrine Poulsen', 'katrine.poulsen@email.com', 22345678, 11),
+                ('CU012', 'Lars Andersen', 'lars.andersen@email.com', 33456789, 12),
+                ('CU013', 'Maria Rasmussen', 'maria.rasmussen@email.com', 44567890, 13),
+                ('CU014', 'Nikolaj Mortensen', 'nikolaj.mortensen@email.com', 55678901, 14),
+                ('CU015', 'Olivia Kristoffersen', 'olivia.kristoffersen@email.com', 66789012, 15),
+                ('CU016', 'Peter Holm', 'peter.holm@email.com', 77890123, None), #De sidste 3 kunder her har ikke en ordre tilknyttet ved app start
+                ('CU017', 'Rikke Jensen', 'rikke.jensen@email.com', 88901234, None),
+                ('CU018', 'Søren Møller', 'soeren.moeller@email.com', 99012345, None),
             ]
 
             cursor.executemany('''
