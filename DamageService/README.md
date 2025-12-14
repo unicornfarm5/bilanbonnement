@@ -17,12 +17,11 @@ damageservice bygger og fylder skaderapport-databasen damage.db, samt damage_lev
 som er en lille tabel der bruges til at håndtere grad af skader og tilhørende pris for fix
 Servicen indeholder flere endpoints til håndtering af databaserne og håndterer også hvilken medabejderrolle der har adgang til at tilgå endpoints'ne. 
 
-⚠️⚠️⚠️⚠️⚠️damageservice indeholder også rental_search_api.py som JONAS VIL SKRIVE NOGET OM FORDI JEG FATTER HAT
-
 
 ## Databasedesign
 - Databasen bruger SQLite
-- Indeholder **et tal der skal opdateres⚠️⚠️⚠️⚠️** skaderapporter ved applikationsstart
+- Indeholder **6** skaderapporter ved applikationsstart på hver sin bil
+- Der kan af bob tilføjes flere skaderapporter på samme bil
 
 ### Entiteter :
 

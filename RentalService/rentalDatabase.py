@@ -94,6 +94,20 @@ def get_all_rentals_db():
         conn.close() #sørger for at vi altid lukker connection så der ikke er en forespørgsel der holder låsen
 
 
+#med hjælp fra chatGPT til at skrive query korrekt til SQLite
+def get_one_rental_db(order_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        # Brug parameter substitution for at undgå SQL-injection
+        cursor.execute("SELECT * FROM rental WHERE order_id = ?", (order_id,))
+        rental = cursor.fetchone()  # kun én lejeaftale
+        if rental:
+            return dict(rental)
+        return None
+    finally:
+        conn.close()
+
 def add_rentals_db(
         customer_id, license_plate, rental_start, rental_end, rental_type, price_per_month
         ):
@@ -144,28 +158,4 @@ def update_rentals_db(order_id: int, updates: dict):
          conn.close()
 
 
-#Vi prøvede tidligere sådan her hvor vi kun sendte end_date
-"""""
-def update_rentals_db(order_id, new_rental_end):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-"""""
-            UPDATE rental 
-                   SET rental_end = ? 
-                   WHERE order_id = ?
-        """, """(new_rental_end, order_id))
-   
-    conn.commit()
-    cursor.execute("SELECT * FROM rental WHERE order_id = ?", (order_id,))
-    row = cursor.fetchone()
-    conn.close()
-    
-    #Hvis ingen rækker blev opdateret: 
-    if row is None:
-        return None
-    
-    return [dict(row)]
-"""
 

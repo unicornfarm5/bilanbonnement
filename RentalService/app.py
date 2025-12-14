@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from flask import jsonify, request, make_response
 from flask_jwt_extended import jwt_required
 from pydantic import BaseModel
-from rentalDatabase import init_db, get_all_rentals_db, seed_rentals, add_rentals_db, update_rentals_db, get_db_connection
+from rentalDatabase import init_db, get_all_rentals_db, seed_rentals, add_rentals_db, update_rentals_db, get_db_connection, get_one_rental_db
 from typing import Optional
 import os
 import jwt
@@ -134,10 +134,10 @@ def post_to_all_rentals(
 
 
 #Endpoint til opdatering af lejeaftale
-@app.put("/all_rentals/update/{order_id}")
-def update_rental(
-    order_id: int, 
-    rental_update: UpdateRentalInput, #Fra class'en
+#lavet med Chat udfra de andre endpoints
+@app.get("/rentals/{order_id}")
+def get_rental(
+    order_id: int,
     authorization: str = Header(None)
 ):
     if authorization is None:
@@ -148,21 +148,32 @@ def update_rental(
         auth_token = authorization[7:]
     else:
         auth_token = authorization
+
+    # Tjek rolle via token
     role, err = get_role_from_token(auth_token)
     if err:
         raise HTTPException(status_code=401, detail=err)
 
-    if role != "rental": # KUN medarbejdere i rental kan opdatgere
+    # Kun roller 'rental' og 'damage' kan tilgå
+    if role not in ["rental", "damage"]:
         raise HTTPException(status_code=403, detail=f"Din rolle: {role} har ikke adgang")
 
-    # Kald databasefunktion og bruger basemodel
-    updated = update_rentals_db(order_id, {"rental_end": rental_update.rental_end})
-
-
-    if updated is None:
+    # Kald databasefunktion
+    rental = get_one_rental_db(order_id)
+    if rental is None:
         raise HTTPException(status_code=404, detail="Order ID findes ikke")
 
-    return updated
+    return rental
 
 
-#Endpoint til sletning af lejeaftale - har lav priotet
+#Endpoint der rinde lejeaftale udfra id
+@app.get("/rentals/{order_id}")
+def get_rental(order_id: str):
+    rental = get_one_rental_db(order_id)
+    if rental:
+        return rental
+    else:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+
+#Endpoint til sletning af lejeaftale - har lav priotet og ikke lavet

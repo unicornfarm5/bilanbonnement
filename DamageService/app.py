@@ -3,7 +3,6 @@ from fastapi import FastAPI, HTTPException, Header
 from fastapi.security import HTTPBearer
 from dotenv import load_dotenv
 from damageDatabase import init_db, get_price_from_level, insert_damage, get_damage_history, seed_damages, get_all_damages
-from rental_search_api import RentalCheck
 from datetime import datetime
 from typing import Optional
 import os
@@ -12,7 +11,6 @@ import jwt
 load_dotenv() # Load miljøvariabler
 SECRET_KEY = os.getenv("KEY")
 
-rental_check = RentalCheck() # opret klientinstans
 app = FastAPI() # Opret FastApi app
 init_db() # Initialiser database ved app-start
 seed_damages()  # Fyld med test-data
