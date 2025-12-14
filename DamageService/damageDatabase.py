@@ -32,6 +32,7 @@ def init_db():
             damage_price INT,
             licensplate TEXT NOT NULL,
             order_id INT,
+            image_path TEXT,
             created_at DATETIME DEFAULT current_timestamp,
             FOREIGN KEY (damage_level_id) REFERENCES damage_levels(level_id)
         )
@@ -94,13 +95,13 @@ def get_price_from_level(level_id):
     return row['price'] if row else None
 
 #Indsæt skade i damage-tabel
-def insert_damage(damage_level_id, damage_description, damage_price, licensplate, order_id):
+def insert_damage(damage_level_id, damage_description, damage_price, licensplate, order_id, image_path=None):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO damage (damage_level_id, damage_description, damage_price, licensplate, order_id, created_at)
+        INSERT INTO damage (damage_level_id, damage_description, damage_price, licensplate, order_id, image_path, created_at)
         VALUES (?, ?, ?, ?, ?, datetime('now'))
-    ''', (damage_level_id, damage_description, damage_price, licensplate, order_id)) #???
+    ''', (damage_level_id, damage_description, damage_price, licensplate, order_id, image_path)) #???
     conn.commit()
     last_id = cursor.lastrowid #Gemmer sidste givne id
     conn.close()
@@ -111,7 +112,7 @@ def get_damage_history(license_plate):
     conn = get_db_connection()
     cursor = conn.cursor() #SELECT taget fra chatten
     cursor.execute(''' 
-        SELECT d.damage_report_id, d.damage_description, d.damage_price, d.order_id, d.created_at,
+        SELECT d.damage_report_id, d.damage_description, d.damage_price, d.order_id, d.created_at, d.image_path,
              dl.level_name AS damage_level_name, dl.price AS level_price
          FROM damage d
          LEFT JOIN damage_levels dl ON d.damage_level_id = dl.level_id
