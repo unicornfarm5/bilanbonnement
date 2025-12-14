@@ -3,6 +3,9 @@ services:
     build:
       context: ./ApiGateway
       dockerfile: Dockerfile
+    environment:
+        - KEY=${KEY}
+        - RENTAL_SERVICE_URL=http://rentalservice:5000
     ports:
       - "8000:5000"
     networks:
@@ -10,19 +13,69 @@ services:
     restart: unless-stopped
     depends_on:
       - accountservice
+      - rentalservice
+      - customerservice
+      
   accountservice:
     build:
       context: ./AccountService
       dockerfile: Dockerfile
+    environment:
+        - KEY=${KEY}
     ports:
       - "5010:5000"
     networks:
       - app-network
     restart: unless-stopped
+  
+  rentalservice:
+    build:
+      context: ./RentalService
+      dockerfile: Dockerfile
+    environment:
+        - KEY=${KEY}
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    restart: unless-stopped
+    depends_on:
+      - accountservice
+
+  damageservice:
+    build:
+      context: ./DamageService
+      dockerfile: Dockerfile
+    environment:
+      - KEY=${KEY}
+    ports:
+      - "5002:5002"
+    networks:
+      - app-network
+    restart: unless-stopped
+    depends_on:
+      - rentalservice
+
+  customerservice:
+    build:
+      context: ./CustomerManagement
+      dockerfile: Dockerfile
+    environment:
+        - KEY=${KEY}
+    ports:
+      - "5001:5000"
+    networks:
+      - app-network
+    restart: unless-stopped
+    depends_on:
+      - accountservice
+
   ui:
     build:
       context: ./UIService
       dockerfile: Dockerfile
+    environment:
+        - KEY=${KEY}
     ports:
       - "8501:8501"
     networks:
@@ -30,7 +83,10 @@ services:
     restart: unless-stopped
     depends_on:
       - accountservice
+      - rentalservice
+      - customerservice
 
 networks:
   app-network:
     driver: bridge
+

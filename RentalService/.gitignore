@@ -1,0 +1,15 @@
+# SQLite database file
+rental.db
+
+# Environment variables
+.env
+.venv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# Logs
+*.log

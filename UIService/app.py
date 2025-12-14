@@ -1,8 +1,13 @@
 import streamlit as st
 import requests 
 import jwt  
+from rentalView import show_rental_page #funktion til rental view
+from businessView import show_business_page #funktion til business view
+from damageView import show_damage_page
 
-APIGATEWAY = "http://apigateway:5000"
+#Service overblik fra CONFIG FILEN HVOR LISTEN FINDES 
+from config import RENTALSERVICE, ACCOUNTSERVICE
+
 
 # Fra Claus
 # gemmer variabler mellem re-runs så brugeren kan forblive logget ind selvom appen reloader ?
@@ -26,7 +31,7 @@ with st.sidebar:
             if st.button("Login"):
                 try:
                     response = requests.post(
-                        f"{APIGATEWAY}/api/account/login",
+                        f"{ACCOUNTSERVICE}/login",
                         json={"username": login_username, "password": login_password}
                     )
 
@@ -41,8 +46,10 @@ with st.sidebar:
                             st.session_state.logged_in = True
                             st.session_state.username = login_username
                             st.session_state.auth_token = auth_header
+                            st.session_state.token = token #prøver lige at gemme token her
                             st.session_state.role = user_role
-                            st.success("Login successful!")
+                            #st.success("Login successful!")
+                            st.badge("Login succesful", icon=":material/check:", color="green")
                             st.rerun()
                         else:
                             st.error("Invalid token received from server")
@@ -50,20 +57,29 @@ with st.sidebar:
                         st.error(response.json().get('message', 'Login failed'))
                 except Exception as e:
                     st.error(f"Error connecting to account service: {str(e)}")
-                    print("status kode: " + str(response.status_code))
-                    print(" response text " + response.text)
+                    #print("status kode: " + str(response.status_code))
+                    #print(" response text " + response.text)
 
  
-# Main content
-st.title("Bibabonnement.dk")
-if 'role' not in st.session_state:
-    st.session_state.role = "reader"  # OBS default role indtil der er logget ind??
 
-if st.session_state.role == "admin":
-    st.button("you are admin, Delete record")
-elif st.session_state.role == "editor":
-    st.button("you are editor, Edit record")
-else:  # reader
-    st.write("Read-only view")
+# Tjek af rolle, laver view efter det og sender TOKEN med (via st.session_state)
+if 'role' in st.session_state:
+    st.write(f"Velkommen {st.session_state.username} , du ser funktionalitet tilhørende: {st.session_state.role}")
+
+    SESSION_STATE = st.session_state
+
+    if st.session_state.role == "rental":
+        show_rental_page(SESSION_STATE) #funktion fra rentalView.py
+
+    elif st.session_state.role == "damage": # kommer snart
+        show_damage_page(SESSION_STATE)
+        
+    elif st.session_state.role == "business":     
+        show_business_page(SESSION_STATE) #funktion fra businessView.py
+       
+    else:
+        st.write("Ingen view til din rolle endnu :( ")
 
 
+#Footer
+st.image("image.png", width="content")

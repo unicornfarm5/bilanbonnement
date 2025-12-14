@@ -16,14 +16,15 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+#role kunne også være en enum ("rental", "damage", "business) ? 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
-            role TEXT NOT NULL
+            role TEXT NOT NULL 
         )
-    ''')
+    ''') 
 
     conn.commit()
     conn.close()
@@ -42,9 +43,9 @@ def seed_users():
             INSERT INTO users (username, password, role)
             VALUES (?, ?, ?)
         ''', [
-            ("alice", "password123", "reader"),
-            ("bob", "password123", "editor"),
-            ("carla", "password123", "admin")
+            ("alice", "password123", "rental"),
+            ("bob", "password123", "damage"),
+            ("carla", "password123", "business")
         ])
 
         conn.commit()
