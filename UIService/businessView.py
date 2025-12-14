@@ -21,9 +21,6 @@ def show_business_page(session_state_from_ui):
     # Laver Dataframe / data i tabelform
     df = pd.DataFrame(rentals_data)
 
-    st.subheader("Alle udlejninger")
-    st.dataframe(df)
-
     # Tjekker at rental_start findes
     if "rental_start" not in df.columns:
         st.error("Kolonnen 'rental_start' findes ikke i data – kan ikke lave tidsbaserede grafer.")
@@ -100,7 +97,7 @@ def show_business_page(session_state_from_ui):
     st.plotly_chart(graph1, use_container_width=True)
 
     # Graf 2 – Udlejninger pr. måned
-    st.subheader("Antal udlejninger pr. måned")
+    st.subheader("Antal nye udlejninger pr. måned")
 
     if "rental_id" in df.columns:
         monthly_rentals = (
@@ -123,6 +120,9 @@ def show_business_page(session_state_from_ui):
         labels={"rental_month": "Måned", "rental_count": "Antal udlejninger"},
     )
     st.plotly_chart(graph2, use_container_width=True)
+
+    st.subheader("Alle udlejninger")
+    st.dataframe(df)
 
 
 def get_all_rentals(session_state_from_ui):
