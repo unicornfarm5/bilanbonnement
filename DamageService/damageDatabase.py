@@ -107,31 +107,54 @@ def insert_damage(damage_level_id, damage_description, damage_price, licensplate
     return last_id #Viser sidste givne id
 
 #Hent alle skader for en bil med pris-info
+# Fordi vi viser tabellen her direkte i ui, er navnene oversat og gjort brugervenlige
+# chatGPt er brugt for at oversætte
 def get_damage_history(license_plate):
     conn = get_db_connection()
-    cursor = conn.cursor() #SELECT taget fra chatten
-    cursor.execute(''' 
-        SELECT d.damage_report_id, d.damage_description, d.damage_price, d.order_id, d.created_at,
-             dl.level_name AS damage_level_name, dl.price AS level_price
-         FROM damage d
-         LEFT JOIN damage_levels dl ON d.damage_level_id = dl.level_id
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT 
+            d.damage_report_id      AS skaderapport_id,
+            d.damage_description    AS skadebeskrivelse,
+            d.damage_price          AS skade_pris,
+            d.created_at            AS oprettet_tidspunkt,
+            dl.level_name           AS grad_af_skade
+        FROM damage d
+        LEFT JOIN damage_levels dl 
+            ON d.damage_level_id = dl.level_id
         WHERE d.licensplate = ?
         ORDER BY d.created_at DESC
     ''', (license_plate,))
-    rows = cursor. fetchall()
-    conn.close()
-    return [dict(r) for r in rows] #???
 
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [dict(r) for r in rows]
+
+# Denne er også oversat så det giver god brugeroplevelse
+# chatGPT er brugt til at oversætte og skrive alias'er
 def get_all_damages():
     conn = get_db_connection()
     cursor = conn.cursor()
+
     cursor.execute('''
-        SELECT d.damage_report_id, d.damage_description, d.damage_price, d.licensplate, d.order_id, d.created_at,
-               dl.level_name AS damage_level_name, dl.price AS level_price
+        SELECT 
+            d.damage_report_id      AS skaderapport_id,
+            d.damage_description    AS skadebeskrivelse,
+            d.damage_price          AS skade_pris,
+            d.licensplate           AS nummerplade,
+            d.order_id              AS ordre_id,
+            d.created_at            AS oprettet_tidspunkt,
+            dl.level_name           AS grad_af_skade,
+            dl.price                AS niveau_pris
         FROM damage d
-        LEFT JOIN damage_levels dl ON d.damage_level_id = dl.level_id
+        LEFT JOIN damage_levels dl 
+            ON d.damage_level_id = dl.level_id
         ORDER BY d.created_at DESC
     ''')
+
     rows = cursor.fetchall()
     conn.close()
+
     return [dict(r) for r in rows]
