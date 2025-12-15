@@ -1,4 +1,5 @@
 # 👩🏽‍💻✨Step-by-step guide til dig der åbner for første gang✨👩🏽‍💻
+ - Fork projektet
  - Du **skal** oprette en fil der hedder .env i RODEN af projektet. I den skal du skrive KEY= og så et eller andet sammenhængende
  - Sørg for at du har docker desktop åbn
  - Så skal du åbne terminalen og skrive: `docker-compose up --build`
