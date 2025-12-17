@@ -15,6 +15,7 @@ services:
       - accountservice
       - rentalservice
       - customerservice
+      - damageservice
       
   accountservice:
     build:
@@ -39,9 +40,6 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-    depends_on:
-      - accountservice
-
   damageservice:
     build:
       context: ./DamageService
@@ -53,8 +51,6 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-    depends_on:
-      - rentalservice
 
   customerservice:
     build:
@@ -67,8 +63,6 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-    depends_on:
-      - accountservice
 
   ui:
     build:
@@ -85,6 +79,7 @@ services:
       - accountservice
       - rentalservice
       - customerservice
+      - damageservice
 
 networks:
   app-network:
