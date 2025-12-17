@@ -1,5 +1,8 @@
 import uvicorn
-from fastapi import FastAPI, HTTPException, Header
+import os
+import shutil
+from pathlib import Path
+from fastapi import FastAPI, HTTPException, File, UploadFile, Form, Header
 from fastapi.security import HTTPBearer
 from dotenv import load_dotenv
 from damageDatabase import init_db, get_price_from_level, insert_damage, get_damage_history, seed_damages, get_all_damages
@@ -12,6 +15,9 @@ load_dotenv() # Load miljøvariabler
 SECRET_KEY = os.getenv("KEY")
 
 app = FastAPI() # Opret FastApi app
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+
 init_db() # Initialiser database ved app-start
 seed_damages()  # Fyld med test-data
 security = HTTPBearer()
@@ -72,27 +78,38 @@ def create_damage_report(
         )
 
     try:
+        #Gem billede hvis uploaded
+        image_path = None
+        if image and image.filename:
+            file_path = UPLOAD_DIR / image.filename
+    
+            # Gem filen
+            with file_path.open("wb") as buffer:
+                shutil.copyfileobj(image.file, buffer)
+    
+            image_path = f"uploads/{image.filename}"
+        
         # Find pris ud fra damage_levels
-        damage_price = get_price_from_level(data['damage_level_id'])
+        damage_price = get_price_from_level(damage_level_id)
         if damage_price is None:
-            raise HTTPException(
-                status_code=400,
-                detail=f"damage_level_id {data['damage_level_id']} findes ikke"
+            raise HTTPException(status_code=400, detail=f"damage_level_id {damage_level_id} findes ikke"
             )
         
         # Indsæt i database
         damage_id = insert_damage( # hvad sker der her??
-            damage_level_id=data['damage_level_id'],
-            damage_description=data.get('damage_description', ''),
+            damage_level_id=damage_level_id,
+            damage_description=damage_description,
             damage_price=damage_price,
-            licensplate=data['licensplate'],
-            order_id=data.get('order_id')
+            licensplate=licensplate,
+            order_id=order_id,
+            image_path=image_path
         )
 
         return{ # og her??
             'damage_report_id': damage_id,
             'damage_price': damage_price,
-            'licensplate': data['licensplate'],
+            'licensplate': licensplate,
+            'image_path': image_path,
             'created_at': datetime.now().isoformat()
         }
     

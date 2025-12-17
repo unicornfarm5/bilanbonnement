@@ -66,6 +66,9 @@ def show_damage_page(session_state_from_ui):
         damage_level= st.selectbox("Skade niveau", ["ingen", "let", "middel", "svær", "kritisk"])
         damge_description_input = st.text_input("Beskriv skaden", key="skade_input")
 
+        #Fra chatten til billeder
+        uploaded_file = st.file_uploader("Upload billede af skade", type=["jpg", "jpeg", "png"], key="damage_image")
+
         #Får damage_level_id ud fra brugerindtastninger så data er på korrekt form når det sendes til db
         damage_levels_map = {
                     "ingen": 1,
@@ -76,20 +79,23 @@ def show_damage_page(session_state_from_ui):
                 }
         damage_level_id = damage_levels_map[damage_level]
 
-
-         #Postes når knap trykkes        
+        #Postes når knap trykkes        
         if st.button("Gem rapport", key="create_damage_rapport"):
-            payload = {
+            files = {}
+            if uploaded_file is not None:
+                  files["image"] = (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)
+            data = {
                         "damage_level_id" : damage_level_id,
                         "damage_description" : damge_description_input, 
                         "licensplate" : licens_plate
                     }
-            
+
             try:
                 response = requests.post(
                      f"{DAMAGESERVICE}/damage", 
                      headers=headers, 
-                     json=payload
+                     json=data,
+                     files=files if files else None
                      )
                 if response.status_code == 200: #vi har 200 ok i back for oprettet, selvom man normalt ville have 201 for created. Småting :)
                     st.session_state.reload_rentals = True # genindlæser state for at kunne vise de nye opdateringer
